@@ -89,3 +89,7 @@ function fetchWeather(): Result<Weather, ApiError> {
   return ok(json.value)
 }
 ```
+
+## Matching Rust's Implementation
+
+The goal of this library is to match Rust's `Result` as close as possible. If there is anything missing, please file an issue.

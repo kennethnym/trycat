@@ -16,7 +16,8 @@
 		}
 	},
 	"scripts": {
-		"test": "vitest",
+		"test": "vitest run",
+		"prepublish": "tsup trycat.ts --dts --format cjs,esm",
 		"build": "tsup trycat.ts --dts --format cjs,esm"
 	},
 	"devDependencies": {
