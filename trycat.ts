@@ -288,7 +288,7 @@ class Err<TErr> implements ResultBase<never, TErr> {
 	}
 
 	expect(message: string): never {
-		throw new Err(message)
+		throw new Error(message)
 	}
 
 	unwrapErr(): TErr {

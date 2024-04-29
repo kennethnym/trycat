@@ -1,5 +1,5 @@
-import { describe, it, test, expect, expectTypeOf, vi } from "vitest"
-import { ok, err, type Result } from "./trycat"
+import { describe, expect, expectTypeOf, it, test, vi } from "vitest"
+import { type Result, err, ok, tryp, trys } from "./trycat"
 
 describe("Ok", () => {
 	describe("isOk", () => {
@@ -119,5 +119,155 @@ describe("Ok", () => {
 		expect(() => {
 			ok("mai").expectErr("mai exists")
 		}).toThrow("mai exists")
+	})
+})
+
+describe("Err", () => {
+	test("isOk returns false", () => {
+		const result = err("error")
+		expect(result.isOk()).toBeFalsy()
+	})
+
+	test("isErr returns true", () => {
+		const result = err("error")
+		expect(result.isErr()).toBeTruthy()
+	})
+
+	test("isErr casts Result to Err if true", () => {
+		const result = err("error")
+		if (result.isErr()) {
+			expect(result.error).toEqual("error")
+		} else {
+			throw new Error("isErr should not return false")
+		}
+	})
+
+	test("inspect does nothing and returns Err", () => {
+		const fn = vi.fn()
+		const result = err(401).inspect(fn)
+		expect(fn).not.toBeCalled()
+		expect(result.error).toEqual(401)
+	})
+
+	test("inspectErr calls the given function with the contained error value and returns Err", () => {
+		const fn = vi.fn()
+		const result = err(500).inspectErr(fn)
+		expect(fn).toBeCalledWith(500)
+		expect(result.error).toEqual(500)
+	})
+
+	test("map does nothing and returns Err", () => {
+		const fn = vi.fn()
+		const someErrors = ["some", "error"]
+		const result = err(someErrors).map(fn)
+		expect(fn).not.toBeCalled()
+		expect(result.error).toEqual(someErrors)
+	})
+
+	test("mapOr returns the default value", () => {
+		const fn = vi.fn()
+		const result = err("fs error").mapOr("", fn)
+		expect(fn).not.toBeCalled()
+		expect(result).toEqual("")
+	})
+
+	test("mapOrElse calls the first function with the contained error value and returns the value returned by the function", () => {
+		const fn = vi.fn()
+		const result = err("asd").mapOrElse((error) => `${error}asd`, fn)
+		expect(fn).not.toBeCalled()
+		expect(result).toEqual("asdasd")
+	})
+
+	test("mapErr calls the given function with the contained error value and returns a new Err with the value returned by the function", () => {
+		const result = err('{"error":"wrong_password"}').mapErr((json) => JSON.parse(json))
+		expect(result.error).toEqual({ error: "wrong_password" })
+	})
+
+	test("or returns the given Result", () => {
+		const result = err("idk").or(ok("hello"))
+		expect(result.value).toEqual("hello")
+	})
+
+	test("orElse calls the given function with the contained error and returns the Result returned by the function", () => {
+		const result = err("mai").orElse((name) => ok(`${name} san`))
+		expect(result.value).toEqual("mai san")
+	})
+
+	test("and returns this Err", () => {
+		const result = err("failure").and(ok("hello"))
+		expect(result.error).toEqual("failure")
+	})
+
+	test("andThen returns this Err", () => {
+		const fn = vi.fn()
+		const result = err("failure").andThen(fn)
+		expect(fn).not.toBeCalled()
+		expect(result.error).toEqual("failure")
+	})
+
+	test("unwrap throws an error", () => {
+		expect(() => {
+			const result = err("failure").unwrap()
+		}).toThrow()
+	})
+
+	test("unwrapOrElse calls the given function with the contained error value and returns the value returned by the function", () => {
+		const result = err(1).unwrapOrElse((error) => error + 1)
+		expect(result).toEqual(2)
+	})
+
+	test("expect throws with the given error message", () => {
+		expect(() => {
+			err("internal").expect("error message")
+		}).toThrow("error message")
+	})
+
+	test("expectErr returns the contained error value", () => {
+		const result = err(123)
+		expect(result.expectErr("should error")).toEqual(123)
+	})
+})
+
+describe("trys", () => {
+	it("returns the value returned by the given function as an Ok", () => {
+		const result = trys(() => {
+			return 123
+		})
+		if (result.isOk()) {
+			expect(result.value).toEqual(123)
+		} else {
+			throw new Error("Expected an Ok value, received an Err")
+		}
+	})
+
+	it("catches the thrown error and returns it as an Err", () => {
+		const result = trys(() => {
+			throw "FAILED"
+		})
+		if (result.isErr()) {
+			expect(result.error).toEqual("FAILED")
+		} else {
+			throw new Error("Expected an Err, received an Ok")
+		}
+	})
+})
+
+describe("tryp", () => {
+	it("returns the resolved value of the given promise as an Ok", async () => {
+		const result = await tryp(Promise.resolve(123))
+		if (result.isOk()) {
+			expect(result.value).toEqual(123)
+		} else {
+			throw new Error("Expected an Ok value, received an Err")
+		}
+	})
+
+	it("returns the error returned by the Promise as an Err", async () => {
+		const result = await tryp(Promise.reject("FAILED"))
+		if (result.isErr()) {
+			expect(result.error).toEqual("FAILED")
+		} else {
+			throw new Error("Expected an Err, received an Ok")
+		}
 	})
 })
