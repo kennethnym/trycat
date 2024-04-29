@@ -8,12 +8,12 @@
 import { type Result, trys } from "trycat"
 
 function readTextFileSync(path: string): Result<string, string> {
-    return trys(fs.readFileSync(path, "utf-8")).mapErr((err) => {
-      if (err instance of Error) {
-          return err.message
-      }
-      return "unknown"
-    })
+  return trys(fs.readFileSync(path, "utf-8")).mapErr((err) => {
+    if (err instance of Error) {
+      return err.message
+    }
+    return "unknown"
+  })
 }
 
 const rows = readTextFileSync("./data.csv")
