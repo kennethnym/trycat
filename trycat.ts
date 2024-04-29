@@ -18,7 +18,7 @@ interface ResultBase<T, TErr> {
 	 * Calls the provided function with the contained value if this Result is Ok.
 	 * Nothing is performed otherwise.
 	 *
-	 * @param f The function to be called if this Result is Ok. First arg will receive the contained value.
+	 * @param f - The function to be called if this Result is Ok. First arg will receive the contained value.
 	 *
 	 * @returns This Result.
 	 */
@@ -28,7 +28,7 @@ interface ResultBase<T, TErr> {
 	 * Calls the provided function with the contained value if this Result is Err.
 	 * Nothing is performed otherwise.
 	 *
-	 * @param f The function to be called if this Result is Err. First arg will receive the contained error.
+	 * @param f - The function to be called if this Result is Err. First arg will receive the contained error.
 	 *
 	 * @returns This Result.
 	 */
@@ -38,7 +38,7 @@ interface ResultBase<T, TErr> {
 	 * If this Result is Ok, calls the given mapper function with the current contained value
 	 *  and returns a new Result containing the value returned by the mapper function.
 	 *
-	 * @param mapper The function that maps the current contained value to another value.
+	 * @param mapper - The function that maps the current contained value to another value.
 	 *
 	 * @returns A new Result object containing the value returned by the mapper function, or this if this is Err.
 	 */
@@ -48,8 +48,8 @@ interface ResultBase<T, TErr> {
 	 * If this Result is Ok, it does the same thing as {@link map}.
 	 * Otherwise, returns the given default value.
 	 *
-	 * @param def The default value to be returned if this Result is Err.
-	 * @param mapper The function that maps the current contained value to another value if this Result is Ok.
+	 * @param def -  The default value to be returned if this Result is Err.
+	 * @param mapper - The function that maps the current contained value to another value if this Result is Ok.
 	 *
 	 * @returns A new Result object containing the value returned by the mapped function if this is Ok, otherwise the default value.
 	 */
@@ -59,8 +59,8 @@ interface ResultBase<T, TErr> {
 	 * Same as {@link mapOr}, except if this is Err, the default value is returned lazily by the first callback
 	 * which receives the contained error and returns the default value.
 	 *
-	 * @param errMapper The function that maps the contained error value to a default value if this Result is Err.
-	 * @param mapper The function that maps the contained value to a new value if this Result is Ok.
+	 * @param errMapper - The function that maps the contained error value to a default value if this Result is Err.
+	 * @param mapper - The function that maps the contained value to a new value if this Result is Ok.
 	 *
 	 * @returns The value returned by the error mapper if this is Err; The value returned by the value mapper if this is Ok.
 	 */
@@ -71,7 +71,7 @@ interface ResultBase<T, TErr> {
 	 * then returns a new Result containing the new error value returned by the mapper.
 	 * Otherwise, nothing is performed and this is returned.
 	 *
-	 * @param mapper The function that maps the contained error value to another error value.
+	 * @param mapper - The function that maps the contained error value to another error value.
 	 *
 	 * @returns A new Result containing the error value returned by the mapper if this is Err, or this Result otherwise.
 	 */
@@ -122,7 +122,7 @@ interface ResultBase<T, TErr> {
 	/**
 	 * Returns the contained value if this Result is Ok, otherwise throws with the given error message.
 	 *
-	 * @param The error message to be displayed if this Result is Err.
+	 * @param message - The error message to be displayed if this Result is Err.
 	 *
 	 * @returns The contained value if this Result is Ok.
 	 * @throws An error with the given error message if this Result is Err.
@@ -138,7 +138,7 @@ interface ResultBase<T, TErr> {
 	/**
 	 * Returns the contained error value if this Result is Err, otherwise throws with the given error message.
 	 *
-	 * @param The error message to be displayed if this Result is Ok.
+	 * @param message - The error message to be displayed if this Result is Ok.
 	 *
 	 * @returns The contained error value if this Result is Err.
 	 * @throws An error with the given error message if this Result is Ok.
@@ -146,6 +146,13 @@ interface ResultBase<T, TErr> {
 	expectErr(message: string): TErr
 }
 
+/**
+ * Stores the result of a successful operation.
+ * Access the contained via {@link Ok.value}.
+ * Refer to {@link ResultBase} for available methods.
+ *
+ * @see ResultBase
+ */
 class Ok<T> implements ResultBase<T, never> {
 	constructor(public readonly value: T) {}
 
@@ -223,6 +230,13 @@ class Ok<T> implements ResultBase<T, never> {
 	}
 }
 
+/**
+ * Stores the error of a failed operation.
+ * Access the error via {@link Err.error}.
+ * Refer to {@link ResultBase} for available methods.
+ *
+ * @see ResultBase
+ */
 class Err<TErr> implements ResultBase<never, TErr> {
 	constructor(public readonly error: TErr) {}
 
@@ -300,6 +314,14 @@ class Err<TErr> implements ResultBase<never, TErr> {
 	}
 }
 
+/**
+ * Represents the result of a fail-able operation.
+ * A successful operation returns {@link Ok}, and a failed operation returns {@link Err}.
+ *
+ * Refer to {@link ResultBase} for methods available on a {@link Result}.
+ *
+ * @see ResultBase
+ */
 type Result<T, TErr> = Ok<T> | Err<TErr>
 
 function ok<T>(value: T): Ok<T> {
@@ -311,8 +333,8 @@ function err<TErr>(error: TErr): Err<TErr> {
 }
 
 /**
- * Calls the given function, catches any thrown error into an Err,
- * and wraps the returned value with an Ok if nothing goes wrong.
+ * Calls the given function, catches any thrown error into an {@link Err},
+ * and wraps the returned value with an {@link Ok} if nothing goes wrong.
  */
 function trys<T>(fn: () => T): Result<T, unknown> {
 	try {
@@ -324,7 +346,7 @@ function trys<T>(fn: () => T): Result<T, unknown> {
 
 /**
  * Stores the result of the given {@link Promise} into a {@link Result}.
- * If the promise fails, Err is returned. If the promise succeeds, Ok is returned.
+ * If the promise fails, {@link Err} is returned. If the promise succeeds, {@link Ok} is returned.
  *
  * @example
  * const res = await tryp(fetch("/my/api")).mapErr((err) => apiError(err))
@@ -337,4 +359,4 @@ function tryp<T>(promise: Promise<T>): Promise<Result<T, unknown>> {
 }
 
 export { ok, err, trys, tryp }
-export type { Result, Ok, Err }
+export type { Result, ResultBase, Ok, Err }

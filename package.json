@@ -18,11 +18,13 @@
 	"scripts": {
 		"test": "vitest run",
 		"prepublish": "tsup trycat.ts --dts --format cjs,esm",
-		"build": "tsup trycat.ts --dts --format cjs,esm"
+		"build": "tsup trycat.ts --dts --format cjs,esm",
+		"docs": "typedoc --out docs trycat.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.7.1",
 		"tsup": "^8.0.2",
+		"typedoc": "^0.25.13",
 		"typescript": "^5.4.5",
 		"vitest": "^1.5.2"
 	}
