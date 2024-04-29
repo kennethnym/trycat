@@ -1,6 +1,6 @@
 # trycat
 
-`trycat` is a lightweight, type-safe, zero-dependency implementation of the (`Result` type)[https://doc.rust-lang.org/std/result/enum.Result.html] in Rust.
+`trycat` is a lightweight, type-safe, zero-dependency implementation of the [`Result` type](https://doc.rust-lang.org/std/result/enum.Result.html) in Rust.
 
 ## Example
 
