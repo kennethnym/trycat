@@ -1,0 +1,27 @@
+{
+	"name": "trycat",
+	"version": "0.1.0",
+	"description": "A lightweight, type-safe, zero-dependency implementation of the Result type.",
+	"keywords": [],
+	"author": "kennethnym",
+	"license": "MIT",
+	"main": "./dist/trycat.js",
+	"module": "./dist/trycat.mjs",
+	"types": "./dist/trycat.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/trycat.js",
+			"import": "./dist/trycat.mjs",
+			"types": "./dist/trycat.d.ts"
+		}
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsup trycat.ts --dts --format cjs,esm"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.7.1",
+		"tsup": "^8.0.2",
+		"typescript": "^5.4.5"
+	}
+}
