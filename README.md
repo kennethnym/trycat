@@ -16,7 +16,7 @@ import { type Result, trys } from "trycat"
 
 function readTextFileSync(path: string): Result<string, string> {
   return trys(() => {
-    fs.readFileSync(path, "utf-8")
+    return fs.readFileSync(path, "utf-8")
   }).mapErr((err) => {
     if (err instance of Error) {
       return err.message
@@ -61,7 +61,7 @@ type ApiError = "InternalError" | "NetworkError" | "ServerError" | "UnexpectedRe
 const WeatherSchema = z.object({ ... })
 type Weather = z.infer<typeof WeatherSchema>
 
-function fetchWeather(): Result<Weather, ApiError> {
+function fetchWeather(): Promise<Result<Weather, ApiError>> {
   const res = await tryp(fetch("/api/weather"))
   if (res.isErr()) {
     return err("NetworkError")
@@ -86,7 +86,7 @@ function fetchWeather(): Result<Weather, ApiError> {
     return err(weather.error)
   }
 
-  return ok(json.value)
+  return ok(weather.value)
 }
 ```
 
