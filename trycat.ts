@@ -340,9 +340,9 @@ function err<TErr>(error?: TErr): Err<TErr> | Err<void> {
  * Calls the given function, catches any thrown error into an {@link Err},
  * and wraps the returned value with an {@link Ok} if nothing goes wrong.
  */
-function trys(fn: () => void): Result<void, unknown>
 function trys<T>(fn: () => T): Result<T, unknown>
-function trys<T>(fn: () => T | undefined): Result<void, unknown> | Result<T, unknown> {
+function trys(fn: () => void): Result<void, unknown>
+function trys<T>(fn: () => T | undefined): Result<T, unknown> | Result<void, unknown> {
 	try {
 		const retval = fn()
 		return retval ? ok(retval) : ok()
