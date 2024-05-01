@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it, test, vi } from "vitest"
-import { type Result, err, ok, tryp, trys } from "./trycat"
+import { type Result, err, ok, tryp, trys, Err } from "./trycat"
 
 describe("Ok", () => {
 	describe("isOk", () => {
@@ -21,6 +21,11 @@ describe("Ok", () => {
 			const result = ok("test")
 			expect(result.isErr()).toBeFalsy()
 		})
+	})
+
+	test("it accepts empty value", () => {
+		const result = ok()
+		expect(result.value).toBeUndefined()
 	})
 
 	test("inspect calls the given function with the contained value", () => {
@@ -142,6 +147,11 @@ describe("Err", () => {
 		}
 	})
 
+	test("it accepts empty error", () => {
+		const result = err()
+		expect(result.error).toBeUndefined()
+	})
+
 	test("inspect does nothing and returns Err", () => {
 		const fn = vi.fn()
 		const result = err(401).inspect(fn)
@@ -250,6 +260,15 @@ describe("trys", () => {
 			throw new Error("Expected an Err, received an Ok")
 		}
 	})
+
+	it("works with void function", () => {
+		const result = trys(() => {})
+		if (result.isOk()) {
+			expect(result.value).toBeUndefined()
+		} else {
+			throw new Error("Expected an Ok value, received an Err")
+		}
+	})
 })
 
 describe("tryp", () => {
@@ -268,6 +287,15 @@ describe("tryp", () => {
 			expect(result.error).toEqual("FAILED")
 		} else {
 			throw new Error("Expected an Err, received an Ok")
+		}
+	})
+
+	it("works with void Promise", async () => {
+		const result = await tryp(Promise.resolve())
+		if (result.isOk()) {
+			expect(result.value).toBeUndefined()
+		} else {
+			throw new Error("Expected an Ok value, received an Err")
 		}
 	})
 })

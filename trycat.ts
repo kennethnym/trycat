@@ -324,21 +324,28 @@ class Err<TErr> implements ResultBase<never, TErr> {
  */
 type Result<T, TErr> = Ok<T> | Err<TErr>
 
-function ok<T>(value: T): Ok<T> {
-	return new Ok(value)
+function ok(): Ok<void>
+function ok<T>(value: T): Ok<T>
+function ok<T>(value?: T): Ok<T> | Ok<void> {
+	return value ? new Ok(value) : new Ok(undefined)
 }
 
-function err<TErr>(error: TErr): Err<TErr> {
-	return new Err(error)
+function err(): Err<void>
+function err<T>(error: T): Err<T>
+function err<TErr>(error?: TErr): Err<TErr> | Err<void> {
+	return error ? new Err(error) : new Err(undefined)
 }
 
 /**
  * Calls the given function, catches any thrown error into an {@link Err},
  * and wraps the returned value with an {@link Ok} if nothing goes wrong.
  */
-function trys<T>(fn: () => T): Result<T, unknown> {
+function trys(fn: () => void): Result<void, unknown>
+function trys<T>(fn: () => T): Result<T, unknown>
+function trys<T>(fn: () => T | undefined): Result<void, unknown> | Result<T, unknown> {
 	try {
-		return ok(fn())
+		const retval = fn()
+		return retval ? ok(retval) : ok()
 	} catch (e: unknown) {
 		return err(e)
 	}
@@ -354,7 +361,9 @@ function trys<T>(fn: () => T): Result<T, unknown> {
  *   return err(res.error)
  * }
  */
-function tryp<T>(promise: Promise<T>): Promise<Result<T, unknown>> {
+function tryp(promise: Promise<void>): Promise<Result<void, unknown>>
+function tryp<T>(promise: Promise<T>): Promise<Result<T, unknown>>
+function tryp<T>(promise: Promise<T>): Promise<Result<T, unknown> | Result<void, unknown>> {
 	return promise.then((value) => ok(value)).catch((e) => err(e))
 }
 
