@@ -61,7 +61,7 @@ type ApiError = "InternalError" | "NetworkError" | "ServerError" | "UnexpectedRe
 const WeatherSchema = z.object({ ... })
 type Weather = z.infer<typeof WeatherSchema>
 
-function fetchWeather(): Promise<Result<Weather, ApiError>> {
+async function fetchWeather(): Promise<Result<Weather, ApiError>> {
   const res = await tryp(fetch("/api/weather"))
   if (res.isErr()) {
     return err("NetworkError")
