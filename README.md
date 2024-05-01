@@ -40,7 +40,7 @@ function readTextFileSync(path: string): Result<string, string> {
     const content = fs.readFileSync(path, "utf-8")
     return ok(content)
   } catch (err: unknown) {
-    if (err instance of Error) {
+    if (err instanceof Error) {
       return err(err.message)
     }
     return err("unknown")
