@@ -1,13 +1,15 @@
 {
 	"name": "trycat",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A lightweight, type-safe, zero-dependency implementation of the Result type.",
 	"keywords": ["result", "result-type", "error-handling", "error", "monad", "rust", "rust-result"],
 	"author": "kennethnym",
 	"license": "MIT",
+	"type": "module",
 	"main": "./dist/trycat.js",
 	"module": "./dist/trycat.mjs",
 	"types": "./dist/trycat.d.ts",
+	"files": ["dist", "LICENSE", "README.md", "package.json"],
 	"exports": {
 		".": {
 			"require": "./dist/trycat.js",
