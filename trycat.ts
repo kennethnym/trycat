@@ -222,11 +222,11 @@ class Ok<T> implements ResultBase<T, never> {
 	}
 
 	unwrapErr(): never {
-		throw this.value
+		throw new Error(`${this.value}`)
 	}
 
-	expectErr(msg: string): never {
-		throw new Error(msg)
+	expectErr(message: string): never {
+		throw new Error(`${message}: ${this.value}`)
 	}
 }
 
@@ -290,7 +290,7 @@ class Err<TErr> implements ResultBase<never, TErr> {
 	}
 
 	unwrap(): never {
-		throw new Error("Attempted to unwrap an Err value.")
+		throw new Error(`${this.error}`)
 	}
 
 	unwrapOr<TDef>(def: TDef): TDef {
@@ -302,7 +302,7 @@ class Err<TErr> implements ResultBase<never, TErr> {
 	}
 
 	expect(message: string): never {
-		throw new Error(message)
+		throw new Error(`${message}: ${this.error}`)
 	}
 
 	unwrapErr(): TErr {

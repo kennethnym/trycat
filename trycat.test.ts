@@ -111,19 +111,13 @@ describe("Ok", () => {
 	test("unwrapErr throws the contained value", () => {
 		expect(() => {
 			ok("mai").unwrapErr()
-		}).toThrow()
-
-		try {
-			ok("mai").unwrapErr()
-		} catch (err) {
-			expect(err).toEqual("mai")
-		}
+		}).toThrow("mai")
 	})
 
 	test("expectErr throws with the given error message", () => {
 		expect(() => {
 			ok("mai").expectErr("mai exists")
-		}).toThrow("mai exists")
+		}).toThrow("mai exists: mai")
 	})
 })
 
@@ -218,7 +212,7 @@ describe("Err", () => {
 	test("unwrap throws an error", () => {
 		expect(() => {
 			const result = err("failure").unwrap()
-		}).toThrow()
+		}).toThrow("failure")
 	})
 
 	test("unwrapOrElse calls the given function with the contained error value and returns the value returned by the function", () => {
@@ -229,7 +223,7 @@ describe("Err", () => {
 	test("expect throws with the given error message", () => {
 		expect(() => {
 			err("internal").expect("error message")
-		}).toThrow("error message")
+		}).toThrow("error message: internal")
 	})
 
 	test("expectErr returns the contained error value", () => {
