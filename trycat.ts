@@ -103,7 +103,7 @@ interface ResultBase<T, TErr> {
 
 	/**
 	 * @returns the contained value if this Result is Ok.
-	 * @throws if this Result is Err
+	 * @throws if this Result is Err, with the error message provided by the containing error.
 	 */
 	unwrap(): T
 
@@ -126,12 +126,13 @@ interface ResultBase<T, TErr> {
 	 *
 	 * @returns The contained value if this Result is Ok.
 	 * @throws An error with the given error message if this Result is Err.
+	 *         The error message includes the provided message, as well as the content of the containing error.
 	 */
 	expect(message: string): T
 
 	/**
 	 * @returns the contained error value if this Result is Err.
-	 * @throws the contained value if this Result is Ok
+	 * @throws the contained value as the error message if this Result is Ok
 	 */
 	unwrapErr(): TErr
 
@@ -141,7 +142,7 @@ interface ResultBase<T, TErr> {
 	 * @param message - The error message to be displayed if this Result is Ok.
 	 *
 	 * @returns The contained error value if this Result is Err.
-	 * @throws An error with the given error message if this Result is Ok.
+	 * @throws An error with the given error message and the content of the containing error as the message if this Result is Ok.
 	 */
 	expectErr(message: string): TErr
 }
